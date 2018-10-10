@@ -1,0 +1,15 @@
+{
+  "name": "graphql-simple-cache",
+  "version": "0.0.1",
+  "description": "A simple, flexible, scalable caching solution for graphql servers.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ikhnaton/graphql-simple-cache.git"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ikhnaton <ikhnaton@techie.com>",
+  "license": "MIT"
+}
