@@ -78,7 +78,6 @@ class GraphQLSimpleCache
         expiry
     })
     {
-        const startTime = new Date();
         let keyOptions = Object.assign({}, options);
         if ((typeof excludeKeys !== 'undefined') && (excludeKeys !== null))
         {
@@ -102,7 +101,7 @@ class GraphQLSimpleCache
 
             keyOptions = filterKeys(options, excludeKeys);
         }
-        console.log("keyOptions:", JSON.stringify(keyOptions));
+        
         //todo: sort option keys
         let returnValue = this.cache.get(JSON.stringify(keyOptions));
         if (returnValue === null)
@@ -115,8 +114,6 @@ class GraphQLSimpleCache
             })
         }
 
-        const endTime = new Date();
-        console.log("Execution Time:", endTime.getTime() - startTime.getTime());
         return returnValue;
     }
 }
