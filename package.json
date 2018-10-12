@@ -1,6 +1,6 @@
 {
   "name": "graphql-simple-cache",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A simple, flexible, scalable caching solution for graphql servers.",
   "repository": {
     "type": "git",
@@ -9,7 +9,7 @@
   "main": "dist/index.js",
   "scripts": {
     "prestart": "node_modules/.bin/webpack --config webpack.config.js",
-    "build": "node_modules/.bin/webpack --config webpack.config.js",
+    "bnpm uild": "node_modules/.bin/webpack --config webpack.config.js",
     "test": "jest",
     "start": "node index.js",
     "dev": "node_modules/.bin/concurrently --names \"nodemon,webpack\" -c \"blue,green\" \"node_modules/.bin/nodemon -w index.js\" \"node_modules/.bin/webpack --config webpack.config.js\""
