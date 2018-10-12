@@ -1,4 +1,4 @@
-import { GraphQLSimpleCache } from '../dist/index';
+import { GraphQLSimpleCache } from './index';
 
 describe('index.js - test caching', () =>
 {
