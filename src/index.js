@@ -117,7 +117,7 @@ class GraphQLSimpleCache
                 returnValue = await loader(options);
                 this.cache.put({
                     key: JSON.stringify(keyOptions),
-                    data: returnValue != null ? returnValue.data != null ? returnValue.data : returnValue : null,
+                    data: returnValue,
                     ttl: ((typeof expiry !== 'undefined') && (expiry !== null)) ? expiry : 0
                 })
             }
