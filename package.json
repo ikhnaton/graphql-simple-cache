@@ -9,7 +9,7 @@
   "main": "dist/index.js",
   "scripts": {
     "prestart": "node_modules/.bin/webpack --config webpack.config.js",
-    "bnpm uild": "node_modules/.bin/webpack --config webpack.config.js",
+    "build": "node_modules/.bin/webpack --config webpack.config.js",
     "test": "jest",
     "start": "node index.js",
     "dev": "node_modules/.bin/concurrently --names \"nodemon,webpack\" -c \"blue,green\" \"node_modules/.bin/nodemon -w index.js\" \"node_modules/.bin/webpack --config webpack.config.js\""
