@@ -1,16 +1,10 @@
 const path = require('path');
-const webpack = require('webpack');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const MATCH_ALL_NON_RELATIVE_IMPORTS = /^\w.*$/i;
 
 const pluginConfigs = {
-	UglifyJsPlugin:	new UglifyJsPlugin(),
-	EnvironmentPlugin: new webpack.DefinePlugin({
-		'process.env': {
-			'NODE_ENV': JSON.stringify('production')
-		}
-	})
+	UglifyJsPlugin:	new UglifyJsPlugin()
 };
 
 const baseConfig = {
@@ -45,7 +39,6 @@ const serverConfig = Object.assign({}, baseConfig, {
 	plugins: [
 		pluginConfigs.UglifyJsPlugin
 	]
-//	externals: ['vcap.local.js']
 })
 
 module.exports = [ serverConfig ]

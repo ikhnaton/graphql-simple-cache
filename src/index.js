@@ -1,3 +1,5 @@
+import { realpathSync } from "fs";
+
 class GraphQLSimpleCache
 {
     /**
@@ -83,6 +85,10 @@ class GraphQLSimpleCache
         {
             const filterKeys = (obj, dropKeys) => 
             {
+                if ((typeof obj === 'undefined') || (obj === null))
+                {
+                    return obj;
+                }
                 return Object.keys(obj).reduce((accum, key) => {
                     if (!dropKeys.includes(key))
                     {
@@ -106,12 +112,19 @@ class GraphQLSimpleCache
         let returnValue = this.cache.get(JSON.stringify(keyOptions));
         if (returnValue === null)
         {
-            returnValue = await loader(options);
-            this.cache.put({
-                key: JSON.stringify(keyOptions),
-                data: returnValue,
-                ttl: ((typeof expiry !== 'undefined') && (expiry !== null)) ? expiry : 0
-            })
+            try
+            {
+                returnValue = await loader(options);
+                this.cache.put({
+                    key: JSON.stringify(keyOptions),
+                    data: returnValue != null ? returnValue.data != null ? returnValue.data : returnValue : null,
+                    ttl: ((typeof expiry !== 'undefined') && (expiry !== null)) ? expiry : 0
+                })
+            }
+            catch (error)
+            {
+                console.log(error);
+            }
         }
 
         return returnValue;

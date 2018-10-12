@@ -1,5 +1,8 @@
 # GraphQL Simple Cache - Release Notes / Change Log
 
+## v0.0.7
+Resolve issue with nested nulls in complex objects
+
 ## v0.0.6
 Fix distribution issue
 
