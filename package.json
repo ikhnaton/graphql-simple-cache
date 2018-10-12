@@ -1,6 +1,6 @@
 {
   "name": "graphql-simple-cache",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A simple, flexible, scalable caching solution for graphql servers.",
   "repository": {
     "type": "git",

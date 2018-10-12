@@ -135,4 +135,33 @@ describe('index.js - test caching', () =>
             done();
         }, 200);
     });
+
+    test('test that data loads from cache while excluding a key', async (done) => {
+        const loader = new GraphQLSimpleCache();
+
+        const mockDataRetriever = jest.fn(({name, age}) => {
+            return {
+                item1: {
+                    name: `${name}-1`,
+                    age: age,
+                    count: 5 + age
+                },
+                item2: {
+                    name: `${name}-2`,
+                    age: age,
+                    count: 7 + age
+                }
+            }
+        });
+
+        const run1 = await loader.load({options: {age: 6, name: "Bill"}, loader: mockDataRetriever, excludeKeys: ["age"]});
+        const run2 = await loader.load({options: {age: 8, name: "Bill"}, loader: mockDataRetriever, excludeKeys: ["age"]});
+
+        expect(mockDataRetriever.mock.calls.length).toBe(1);
+        expect(run1.item1.count).toBe(11);
+        expect(run1.item2.count).toBe(13);
+        expect(run2.item1.count).toBe(11);
+        expect(run2.item2.count).toBe(13);
+        done();
+    });
 });

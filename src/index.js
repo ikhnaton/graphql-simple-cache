@@ -73,21 +73,50 @@ class GraphQLSimpleCache
      */
     async load({
         options,
+        excludeKeys,
         loader,
         expiry
     })
     {
+        const startTime = new Date();
+        let keyOptions = Object.assign({}, options);
+        if ((typeof excludeKeys !== 'undefined') && (excludeKeys !== null))
+        {
+            const filterKeys = (obj, dropKeys) => 
+            {
+                return Object.keys(obj).reduce((accum, key) => {
+                    if (!dropKeys.includes(key))
+                    {
+                        if (typeof obj[key] === 'object')
+                        {
+                            accum[key] = filterKeys(obj[key], dropKeys);
+                        }
+                        else
+                        {
+                            accum[key] = obj[key];
+                        }
+                    }
+                    return accum;
+                }, {});
+            }
+
+            keyOptions = filterKeys(options, excludeKeys);
+        }
+        console.log("keyOptions:", JSON.stringify(keyOptions));
         //todo: sort option keys
-        let returnValue = this.cache.get(JSON.stringify(options));
+        let returnValue = this.cache.get(JSON.stringify(keyOptions));
         if (returnValue === null)
         {
             returnValue = await loader(options);
             this.cache.put({
-                key: JSON.stringify(options),
+                key: JSON.stringify(keyOptions),
                 data: returnValue,
                 ttl: ((typeof expiry !== 'undefined') && (expiry !== null)) ? expiry : 0
             })
         }
+
+        const endTime = new Date();
+        console.log("Execution Time:", endTime.getTime() - startTime.getTime());
         return returnValue;
     }
 }
