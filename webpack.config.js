@@ -39,7 +39,7 @@ const baseConfig = {
 
 const serverConfig = Object.assign({}, baseConfig, {
 	entry: {
-		backend: path.join(__dirname, '/src/index.js')
+		backend: ['@babel/polyfill', path.join(__dirname, '/src/index.js')]
 	},
 	target: 'node',
 	plugins: [

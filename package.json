@@ -1,6 +1,6 @@
 {
   "name": "graphql-simple-cache",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A simple, flexible, scalable caching solution for graphql servers.",
   "repository": {
     "type": "git",
@@ -18,17 +18,12 @@
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.1.2",
-    "@babel/helper-plugin-utils": "^7.0.0",
-    "@babel/node": "^7.0.0",
-    "@babel/polyfill": "^7.0.0",
     "@babel/preset-env": "^7.1.0",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^23.6.0",
     "babel-loader": "^8.0.4",
     "concurrently": "^4.0.1",
-    "copy-webpack-plugin": "^4.5.3",
     "jest": "^23.6.0",
-    "mini-css-extract-plugin": "^0.4.4",
     "uglifyjs-webpack-plugin": "^2.0.1",
     "webpack": "^4.20.2",
     "webpack-cli": "^3.1.2"
@@ -43,5 +38,7 @@
     "verbose": true,
     "testURL": "http://localhost"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@babel/polyfill": "^7.0.0"
+  }
 }
