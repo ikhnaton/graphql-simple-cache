@@ -129,6 +129,20 @@ class GraphQLSimpleCache
 
         return returnValue;
     }
+
+    loader({
+        fn,
+        excludeKeys,
+        expiry
+    })
+    {
+        return async (options) => await this.load({
+            options, 
+            excludeKeys,
+            loader: fn,
+            expiry
+        })
+    }
 }
 
 export { GraphQLSimpleCache }

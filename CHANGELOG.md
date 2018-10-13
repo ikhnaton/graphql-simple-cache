@@ -1,5 +1,10 @@
 # GraphQL Simple Cache - Release Notes / Change Log
 
+## v0.0.9
+- Add documentation of basic usage
+- Add thunk loader for DataLoader like usage.
+- Add additional testing
+
 ## v0.0.8
 Correct issue where cached value was inadvertently altered from original value.
 

@@ -164,4 +164,36 @@ describe('index.js - test caching', () =>
         expect(run2.item2.count).toBe(13);
         done();
     });
+
+    test('test that loader creates thunk that loads data from fn and from cache', async (done) => {
+        const cache = new GraphQLSimpleCache();
+
+        const mockDataRetriever = jest.fn(({name, age}) => {
+            return {
+                item1: {
+                    name: `${name}-1`,
+                    age: age,
+                    count: 5 + age
+                },
+                item2: {
+                    name: `${name}-2`,
+                    age: age,
+                    count: 7 + age
+                }
+            }
+        });
+
+        const myLoader = cache.loader({fn: mockDataRetriever});
+
+        const run1 = await myLoader({age: 6, name: "Bill"});
+        const run2 = await myLoader({age: 6, name: "Bill"});
+
+        expect(mockDataRetriever.mock.calls.length).toBe(1);
+        expect(run1.item1.count).toBe(11);
+        expect(run1.item2.count).toBe(13);
+        expect(run2.item1.count).toBe(11);
+        expect(run2.item2.count).toBe(13);
+        done();
+    });
+
 });
