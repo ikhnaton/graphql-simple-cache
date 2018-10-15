@@ -156,7 +156,7 @@ class GraphQLSimpleCache
         {
             keyOptions = filterKeys(options, excludeKeys);
         }
-        this.cache.delete(keyOptions);
+        this.cache.delete(JSON.stringify(keyOptions));
     }
 
     flush()

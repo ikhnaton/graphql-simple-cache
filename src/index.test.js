@@ -196,4 +196,77 @@ describe('index.js - test caching', () =>
         done();
     });
 
+    test('test that data can be deleted from cache while by key', async (done) => {
+        const loader = new GraphQLSimpleCache();
+
+        const mockDataRetriever = jest.fn(({name, age}) => {
+            return {
+                item1: {
+                    name: `${name}-1`,
+                    age: age,
+                    count: 5 + age
+                },
+                item2: {
+                    name: `${name}-2`,
+                    age: age,
+                    count: 7 + age
+                }
+            }
+        });
+
+        const bill = await loader.load({options: {age: 6, name: "Bill"}, loader: mockDataRetriever, excludeKeys: ["age"]});
+        const bill2 = await loader.load({options: {age: 7, name: "Bill"}, loader: mockDataRetriever, excludeKeys: ["age"]});
+        const bob = await loader.load({options: {age: 8, name: "Bob"}, loader: mockDataRetriever, excludeKeys: ["age"]});
+        const bob2 = await loader.load({options: {age: 9, name: "Bob"}, loader: mockDataRetriever, excludeKeys: ["age"]});
+        loader.delete({options: {age: 9, name: "Bob"}, excludeKeys: ["age"]});
+        const bill3 = await loader.load({options: {age: 11, name: "Bill"}, loader: mockDataRetriever, excludeKeys: ["age"]});
+        const bob3 = await loader.load({options: {age: 12, name: "Bob"}, loader: mockDataRetriever, excludeKeys: ["age"]});
+
+
+        expect(mockDataRetriever.mock.calls.length).toBe(3);
+        expect(bill.item1.count).toBe(11);
+        expect(bill2.item1.count).toBe(11);
+        expect(bill3.item1.count).toBe(11);
+        expect(bob.item1.count).toBe(13);
+        expect(bob2.item1.count).toBe(13);
+        expect(bob3.item1.count).toBe(17);
+        done();
+    });
+
+    test('test that the cache can be flushed', async (done) => {
+        const loader = new GraphQLSimpleCache();
+
+        const mockDataRetriever = jest.fn(({name, age}) => {
+            return {
+                item1: {
+                    name: `${name}-1`,
+                    age: age,
+                    count: 5 + age
+                },
+                item2: {
+                    name: `${name}-2`,
+                    age: age,
+                    count: 7 + age
+                }
+            }
+        });
+
+        const bill = await loader.load({options: {age: 6, name: "Bill"}, loader: mockDataRetriever, excludeKeys: ["age"]});
+        const bill2 = await loader.load({options: {age: 7, name: "Bill"}, loader: mockDataRetriever, excludeKeys: ["age"]});
+        const bob = await loader.load({options: {age: 8, name: "Bob"}, loader: mockDataRetriever, excludeKeys: ["age"]});
+        const bob2 = await loader.load({options: {age: 9, name: "Bob"}, loader: mockDataRetriever, excludeKeys: ["age"]});
+        loader.flush();
+        const bill3 = await loader.load({options: {age: 11, name: "Bill"}, loader: mockDataRetriever, excludeKeys: ["age"]});
+        const bob3 = await loader.load({options: {age: 12, name: "Bob"}, loader: mockDataRetriever, excludeKeys: ["age"]});
+
+
+        expect(mockDataRetriever.mock.calls.length).toBe(4);
+        expect(bill.item1.count).toBe(11);
+        expect(bill2.item1.count).toBe(11);
+        expect(bill3.item1.count).toBe(16);
+        expect(bob.item1.count).toBe(13);
+        expect(bob2.item1.count).toBe(13);
+        expect(bob3.item1.count).toBe(17);
+        done();
+    });
 });
