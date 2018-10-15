@@ -1,5 +1,26 @@
 import { realpathSync } from "fs";
 
+const filterKeys = (obj, dropKeys) => 
+{
+    if ((typeof obj === 'undefined') || (obj === null))
+    {
+        return obj;
+    }
+    return Object.keys(obj).reduce((accum, key) => {
+        if (!dropKeys.includes(key))
+        {
+            if (typeof obj[key] === 'object')
+            {
+                accum[key] = filterKeys(obj[key], dropKeys);
+            }
+            else
+            {
+                accum[key] = obj[key];
+            }
+        }
+        return accum;
+    }, {});
+}
 class GraphQLSimpleCache
 {
     /**
@@ -35,6 +56,9 @@ class GraphQLSimpleCache
                 },
                 delete: (key) => {
                     this.store[key] = null;
+                },
+                flush: () => {
+                    this.store = {};
                 }
             };
         }
@@ -64,6 +88,9 @@ class GraphQLSimpleCache
                 },
                 delete: (key) => {
                     externalCache.delete(key);
+                },
+                flush: () => {
+                    externalCache.fliush();
                 }
             };
         }
@@ -83,28 +110,6 @@ class GraphQLSimpleCache
         let keyOptions = Object.assign({}, options);
         if ((typeof excludeKeys !== 'undefined') && (excludeKeys !== null))
         {
-            const filterKeys = (obj, dropKeys) => 
-            {
-                if ((typeof obj === 'undefined') || (obj === null))
-                {
-                    return obj;
-                }
-                return Object.keys(obj).reduce((accum, key) => {
-                    if (!dropKeys.includes(key))
-                    {
-                        if (typeof obj[key] === 'object')
-                        {
-                            accum[key] = filterKeys(obj[key], dropKeys);
-                        }
-                        else
-                        {
-                            accum[key] = obj[key];
-                        }
-                    }
-                    return accum;
-                }, {});
-            }
-
             keyOptions = filterKeys(options, excludeKeys);
         }
         
@@ -142,6 +147,21 @@ class GraphQLSimpleCache
             loader: fn,
             expiry
         })
+    }
+
+    delete({options, excludeKeys})
+    {
+        let keyOptions = Object.assign({}, options);
+        if ((typeof excludeKeys !== 'undefined') && (excludeKeys !== null))
+        {
+            keyOptions = filterKeys(options, excludeKeys);
+        }
+        this.cache.delete(keyOptions);
+    }
+
+    flush()
+    {
+        this.cache.flush();
     }
 }
 

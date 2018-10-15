@@ -1,5 +1,9 @@
 # GraphQL Simple Cache - Release Notes / Change Log
 
+## v0.0.10
+- Add cache flush capability
+- Add delete by key capability
+  
 ## v0.0.9
 - Add documentation of basic usage
 - Add thunk loader for DataLoader like usage.

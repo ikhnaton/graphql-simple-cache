@@ -12,7 +12,7 @@ npm install graphql-simple-cache
 
 ## Usage
 
-##
+### Importing
 
 Importing of the cache is done as follows:
 ```
@@ -36,6 +36,7 @@ const cache = new GraphQLSimpleCache(externalCache);
 
 ### Usage
 
+#### Caching data
 To cache the results of a data retrieval call, invoke the `load` method as follows:
 ```
 const myResult = await cache.load({
@@ -45,6 +46,7 @@ const myResult = await cache.load({
         expiry: <optional: time in milliseconds before the cache data expires and the loader must be invoked again to get fresh data.>
     });
 ```
+Future calls to retrieve data will utilize the cached result as long as the expiration period has not elapsed.  If it has, then results will bbe retrieved from the data source again, then cached.
 
 Alternatively, you may want to create a thunk similar to how DataLoader functions today.  This can be accomplished as follows:
 ```
@@ -55,6 +57,21 @@ const myLoader = cache.loader({
 });
 
 const myResult = myLoader(keys);
+```
+
+#### Removing single item from the cache
+Removal of an item from the cache is accomplished by passing the options/key object to the `delete` method as follows:
+```
+cache.delete({
+        options: <object containing the keys for your data retrieval call, this will be used as the key for the cache>,
+        excludeKeys: <optional: items contained in your options object that you may want excluded from your cache key>
+});
+```
+
+#### Removing all data from the cache
+Removal of all data from the cache is accomplished by invoking the `flush` method as follows:
+```
+cache.flush();
 ```
 
 ### Coming soon
