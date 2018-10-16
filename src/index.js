@@ -59,6 +59,12 @@ class GraphQLSimpleCache
                 },
                 flush: () => {
                     this.store = {};
+                },
+                prime: (obj) => {
+                    this.store = obj;
+                },
+                dump: () => {
+                    return this.store;
                 }
             };
         }
@@ -91,6 +97,26 @@ class GraphQLSimpleCache
                 },
                 flush: () => {
                     externalCache.fliush();
+                },
+                prime: (obj) => {
+                    if (typeof externalCache.prime === 'function')
+                    {
+                        externalCache.prime(obj);
+                    }
+                    else
+                    {
+                        throw new Error("External cache does not support priming");
+                    }
+                },
+                dump: (obj) => {
+                    if (typeof externalCache.dump === 'function')
+                    {
+                        return externalCache.dump(obj);
+                    }
+                    else
+                    {
+                        throw new Error("External cache does not support dumping");
+                    }
                 }
             };
         }
@@ -162,6 +188,16 @@ class GraphQLSimpleCache
     flush()
     {
         this.cache.flush();
+    }
+
+    prime(obj)
+    {
+        this.cache.prime(obj);
+    }
+
+    dump()
+    {
+        return this.cache.dump();
     }
 }
 

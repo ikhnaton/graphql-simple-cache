@@ -1,6 +1,6 @@
 {
   "name": "graphql-simple-cache",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "A simple, flexible, scalable caching solution for graphql servers.",
   "repository": {
     "type": "git",
@@ -14,6 +14,13 @@
     "start": "node index.js",
     "dev": "node_modules/.bin/concurrently --names \"nodemon,webpack\" -c \"blue,green\" \"node_modules/.bin/nodemon -w index.js\" \"node_modules/.bin/webpack --config webpack.config.js\""
   },
+  "keywords": [
+    "graphql",
+    "cache",
+    "caching",
+    "simple cache",
+    "graphql performance"
+  ],
   "author": "ikhnaton <ikhnaton@techie.com>",
   "license": "MIT",
   "devDependencies": {

@@ -269,4 +269,71 @@ describe('index.js - test caching', () =>
         expect(bob3.item1.count).toBe(17);
         done();
     });
+
+    test('test that the cache can be dumped', async (done) => {
+        const loader = new GraphQLSimpleCache();
+
+        const mockDataRetriever = jest.fn(({name, age}) => {
+            return {
+                item1: {
+                    name: `${name}-1`,
+                    age: age,
+                    count: 5 + age
+                },
+                item2: {
+                    name: `${name}-2`,
+                    age: age,
+                    count: 7 + age
+                }
+            }
+        });
+
+        const bill = await loader.load({options: {age: 6, name: "Bill"}, loader: mockDataRetriever, excludeKeys: ["age"]});
+        const bob = await loader.load({options: {age: 7, name: "Bob"}, loader: mockDataRetriever, excludeKeys: ["age"]});
+        
+        const dataDump = loader.dump();
+        expect(mockDataRetriever.mock.calls.length).toBe(2);
+        expect(Object.keys(dataDump).length).toBe(2);
+        done();
+    });
+
+    test('test that the cache can be primed', async (done) => {
+        const loader = new GraphQLSimpleCache();
+
+        const cacheBase = {
+            "{\"name\":\"Bill\"}": {
+                "data": { "item1": { "name": "Bill-1", "age": 6, "count": 11 }, "item2": { "name": "Bill-2", "age": 6, "count": 13 } }, 
+                "ttl": 0, 
+                "created": 1539701722205
+            }, 
+            "{\"name\":\"Bob\"}": { 
+                "data": { "item1": { "name": "Bob-1", "age": 7, "count": 12 }, 
+                "item2": { "name": "Bob-2", "age": 7, "count": 14 } }, 
+                "ttl": 0, 
+                "created": 1539701722205 
+            }
+        };
+
+        const mockDataRetriever = jest.fn(({name, age}) => {
+            return {
+                item1: {
+                    name: `${name}-1`,
+                    age: age,
+                    count: 5 + age
+                },
+                item2: {
+                    name: `${name}-2`,
+                    age: age,
+                    count: 7 + age
+                }
+            }
+        });
+
+        loader.prime(cacheBase);
+        const bill = await loader.load({options: {age: 6, name: "Bill"}, loader: mockDataRetriever, excludeKeys: ["age"]});
+        const bob = await loader.load({options: {age: 7, name: "Bob"}, loader: mockDataRetriever, excludeKeys: ["age"]});
+        
+        expect(mockDataRetriever.mock.calls.length).toBe(0);
+        done();
+    });
 });

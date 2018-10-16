@@ -74,6 +74,32 @@ Removal of all data from the cache is accomplished by invoking the `flush` metho
 cache.flush();
 ```
 
+#### Extracting all data from the cache
+Extraction of all data from the cache is accomplished by invoking the `dump` method as follows:
+```
+const cachedData = cache.dump();
+```
+
+#### Preload data into the cache
+Preloading of all data into the cache is accomplished by invoking the `prime` method as follows:
+```
+cache.prime(data);
+```
+Data is expected to be in the format that the cache would deliver from an extraction(above).  The basic format is:
+```
+{
+    key: { 
+        data: <raw data>, 
+        ttl: <time in milliseconds that data will expire or 0 for no expiration>, 
+        created: <time in milliseconds that entry was created>
+    },
+    key: {data, ttl, created},
+    key: {data, ttl, created},
+    key: {data, ttl, created},
+    key: {data, ttl, created},
+    ...
+}
+
 ### Coming soon
 A code sandbox with examples.  In the interim, please view the tests for examples.
 
