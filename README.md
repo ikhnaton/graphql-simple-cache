@@ -1,7 +1,7 @@
 # GraphQL Simple Cache
 ### A simple, flexible, scalable caching solution for graphql servers.
 
-While this solution was developed with caching for GraphQL servers in mind, it can be used in pretty much any server side framework.  This cache was designed to be used on your server side code within your GraphQL server and was designed to be very fast and very simple to implement.  I developed this because the popular DataLoader package did not meet my needs.
+While this solution was developed with caching for GraphQL servers in mind, it can be used in pretty much any server side framework.  This cache was designed to be used on your server side code within your GraphQL server and was designed to be very fast and very simple to implement.  I developed this because the popular DataLoader package did not meet my needs in a fashion that suited.
 
 ## Installation
 
@@ -42,6 +42,7 @@ To cache the results of a data retrieval call, invoke the `load` method as follo
 const myResult = await cache.load({
         options: <object containing the keys for your data retrieval call, this will be used as the key for the cache>,
         excludeKeys: <optional: items contained in your options object that you may want excluded from your cache key>,
+        altKey: <optional: key to bbe used instead of data contained in options object>,
         loader: <function that you keys will be passed to in order to invoke your data retrieval>,
         expiry: <optional: time in milliseconds before the cache data expires and the loader must be invoked again to get fresh data.>
     });
@@ -53,6 +54,7 @@ Alternatively, you may want to create a thunk similar to how DataLoader function
 const myLoader = cache.loader({
     fn: (keys) => <dataRetrieval function>(keys),
     excludeKeys: <optional: items contained in your options object that you may want excluded from your cache key>,
+    altKey: <optional: key to bbe used instead of data contained in options object>,
     expiry: <optional: time in milliseconds before the cache data expires and the loader must be invoked again to get fresh data.>
 });
 
@@ -64,7 +66,8 @@ Removal of an item from the cache is accomplished by passing the options/key obj
 ```
 cache.delete({
         options: <object containing the keys for your data retrieval call, this will be used as the key for the cache>,
-        excludeKeys: <optional: items contained in your options object that you may want excluded from your cache key>
+        excludeKeys: <optional: items contained in your options object that you may want excluded from your cache key>,
+        altKey: <optional: key to bbe used instead of data contained in options object>,
 });
 ```
 
@@ -102,5 +105,5 @@ Data is expected to be in the format that the cache would deliver from an extrac
 
 ### Coming soon
 A code sandbox with examples.  In the interim, please view the tests for examples.
-
+```
 [View Release Notes](CHANGELOG.md)

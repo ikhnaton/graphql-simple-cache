@@ -1,5 +1,11 @@
 # GraphQL Simple Cache - Release Notes / Change Log
 
+## v0.0.12
+- Add alternate key for cache
+  
+## v0.0.11
+- resolve deployment issue
+
 ## v0.0.10
 - Add cache flush capability
 - Add delete by key capability

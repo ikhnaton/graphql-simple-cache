@@ -129,11 +129,12 @@ class GraphQLSimpleCache
     async load({
         options,
         excludeKeys,
+        altKey,
         loader,
         expiry
     })
     {
-        let keyOptions = Object.assign({}, options);
+        let keyOptions = altKey || Object.assign({}, options);
         if ((typeof excludeKeys !== 'undefined') && (excludeKeys !== null))
         {
             keyOptions = filterKeys(options, excludeKeys);
@@ -164,20 +165,22 @@ class GraphQLSimpleCache
     loader({
         fn,
         excludeKeys,
+        altKey,
         expiry
     })
     {
         return async (options) => await this.load({
             options, 
             excludeKeys,
+            altKey,
             loader: fn,
             expiry
         })
     }
 
-    delete({options, excludeKeys})
+    delete({options, excludeKeys, altKey})
     {
-        let keyOptions = Object.assign({}, options);
+        let keyOptions = altKey || Object.assign({}, options);
         if ((typeof excludeKeys !== 'undefined') && (excludeKeys !== null))
         {
             keyOptions = filterKeys(options, excludeKeys);

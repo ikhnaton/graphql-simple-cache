@@ -336,4 +336,33 @@ describe('index.js - test caching', () =>
         expect(mockDataRetriever.mock.calls.length).toBe(0);
         done();
     });
+
+    test('test that data loads from cache with alternate key ovverride', async (done) => {
+        const loader = new GraphQLSimpleCache();
+
+        const mockDataRetriever = jest.fn(({name, age}) => {
+            return {
+                item1: {
+                    name: `${name}-1`,
+                    age: age,
+                    count: 5 + age
+                },
+                item2: {
+                    name: `${name}-2`,
+                    age: age,
+                    count: 7 + age
+                }
+            }
+        });
+
+        const run1 = await loader.load({options: {age: 6, name: "Bill"}, loader: mockDataRetriever, altKey: { name: "tom" }});
+        const run2 = await loader.load({options: {age: 6, name: "Bill"}, loader: mockDataRetriever, altKey: { name: "tom" }});
+
+        expect(mockDataRetriever.mock.calls.length).toBe(1);
+        expect(run1.item1.count).toBe(11);
+        expect(run1.item2.count).toBe(13);
+        expect(run2.item1.count).toBe(11);
+        expect(run2.item2.count).toBe(13);
+        done();
+    });
 });
