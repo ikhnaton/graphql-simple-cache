@@ -9,11 +9,11 @@ const pluginConfigs = {
 
 const baseConfig = {
 	output: {
-		filename: 'index.js',
+		filename: '[name].js',
 		path: path.join(__dirname, '/dist'),
 		library: '',
-    	libraryTarget: 'commonjs'
-    },
+		libraryTarget: 'commonjs'
+	},
     watch: false,
 	stats: "errors-only",
 	mode: 'production',
@@ -33,7 +33,8 @@ const baseConfig = {
 
 const serverConfig = Object.assign({}, baseConfig, {
 	entry: {
-		backend: ['@babel/polyfill', path.join(__dirname, '/src/index.js')]
+		"index": ['@babel/polyfill', path.join(__dirname, '/src/index.js')],
+		"external/redis": ['@babel/polyfill', path.join(__dirname, '/src/external/redis.js')]
 	},
 	target: 'node',
 	plugins: [

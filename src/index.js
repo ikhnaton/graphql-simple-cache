@@ -33,13 +33,13 @@ class GraphQLSimpleCache
         {
             this.store = {};
             this.cache = {
-                put: ({key, data, ttl = 0}) => {
+                put: async ({key, data, ttl = 0}) => {
                     if (typeof key !== 'undefined')
                     {
                         this.store[key] = {data, ttl, created: (new Date()).getTime()};
                     }
                 },
-                get: (key) => {
+                get: async (key) => {
                     let ref = this.store[key];
                     if ((typeof ref !== 'undefined') && (ref !== null))
                     {
@@ -54,16 +54,16 @@ class GraphQLSimpleCache
                     }
                     return null;
                 },
-                delete: (key) => {
+                delete: async (key) => {
                     this.store[key] = null;
                 },
-                flush: () => {
+                flush: async () => {
                     this.store = {};
                 },
-                prime: (obj) => {
+                prime: async (obj) => {
                     this.store = obj;
                 },
-                dump: () => {
+                dump: async () => {
                     return this.store;
                 }
             };
@@ -71,14 +71,16 @@ class GraphQLSimpleCache
         else
         {
             this.cache = {
-                put: ({key, data, ttl = 0}) => {
+                put: async ({key, data, ttl = 0}) => {
+                    if (externalCache.connected === false) return;
                     if (typeof key !== 'undefined')
                     {
-                        externalCache.put(key, {data, ttl, created: (new Date()).getTime()});
+                        await externalCache.put(key, {data, ttl, created: (new Date()).getTime()});
                     }
                 },
-                get: (key) => {
-                    let ref = externalCache.get(key);
+                get: async (key) => {
+                    if (externalCache.connected === false) return null;
+                    let ref = await externalCache.get(key);
                     if ((typeof ref !== 'undefined') && (ref !== null))
                     {
                         if ((ref.ttl === 0) || (((new Date()).getTime() - ref.created) < ref.ttl))
@@ -87,28 +89,32 @@ class GraphQLSimpleCache
                         }
                         else
                         {
-                            this.cache.delete(key);
+                            await this.cache.delete(key);
                         }
                     }
                     return null;
                 },
-                delete: (key) => {
-                    externalCache.delete(key);
+                delete: async (key) => {
+                    if (externalCache.connected === false) return;
+                    await externalCache.delete(key);
                 },
-                flush: () => {
-                    externalCache.fliush();
+                flush: async () => {
+                    if (externalCache.connected === false) return;
+                    await externalCache.flush();
                 },
-                prime: (obj) => {
+                prime: async (obj) => {
+                    if (externalCache.connected === false) return;
                     if (typeof externalCache.prime === 'function')
                     {
-                        externalCache.prime(obj);
+                        await externalCache.prime(obj);
                     }
                     else
                     {
                         throw new Error("External cache does not support priming");
                     }
                 },
-                dump: (obj) => {
+                dump: async (obj) => {
+                    if (externalCache.connected === false) return null;
                     if (typeof externalCache.dump === 'function')
                     {
                         return externalCache.dump(obj);
@@ -141,13 +147,13 @@ class GraphQLSimpleCache
         }
         
         //todo: sort option keys
-        let returnValue = this.cache.get(JSON.stringify(keyOptions));
+        let returnValue = await this.cache.get(JSON.stringify(keyOptions));
         if (returnValue === null)
         {
             try
             {
                 returnValue = await loader(options);
-                this.cache.put({
+                await this.cache.put({
                     key: JSON.stringify(keyOptions),
                     data: returnValue,
                     ttl: ((typeof expiry !== 'undefined') && (expiry !== null)) ? expiry : 0
@@ -178,29 +184,29 @@ class GraphQLSimpleCache
         })
     }
 
-    delete({options, excludeKeys, altKey})
+    async delete({options, excludeKeys, altKey})
     {
         let keyOptions = altKey || Object.assign({}, options);
         if ((typeof excludeKeys !== 'undefined') && (excludeKeys !== null))
         {
             keyOptions = filterKeys(options, excludeKeys);
         }
-        this.cache.delete(JSON.stringify(keyOptions));
+        await this.cache.delete(JSON.stringify(keyOptions));
     }
 
-    flush()
+    async flush()
     {
-        this.cache.flush();
+        await this.cache.flush();
     }
 
-    prime(obj)
+    async prime(obj)
     {
-        this.cache.prime(obj);
+        await this.cache.prime(obj);
     }
 
-    dump()
+    async dump()
     {
-        return this.cache.dump();
+        return await this.cache.dump();
     }
 }
 

@@ -1,7 +1,7 @@
 # GraphQL Simple Cache
 ### A simple, flexible, scalable caching solution for graphql servers.
 
-While this solution was developed with caching for GraphQL servers in mind, it can be used in pretty much any server side framework.  This cache was designed to be used on your server side code within your GraphQL server and was designed to be very fast and very simple to implement.  I developed this because the popular DataLoader package did not meet my needs in a fashion that suited.
+While this solution was developed with caching for GraphQL servers in mind, it can be used in pretty much any server side framework.  This cache was designed to be used on your server side code within your GraphQL server and was designed to be very fast and very simple to implement.  I developed this because the popular DataLoader package did not meet my needs as written.
 
 ## Installation
 
@@ -16,11 +16,11 @@ npm install graphql-simple-cache
 
 Importing of the cache is done as follows:
 ```
-const { GraphQLSimpleCache } = require('GraphQLSimpleCache');
+const { GraphQLSimpleCache } = require('graphql-simple-cache');
 ```
 or alternatively as:
 ```
-import { GraphQLSimpleCache } from 'GraphQLSimpleCache';
+import { GraphQLSimpleCache } from 'graphql-simple-cache';
 ```
 
 ### Instantiaton
@@ -102,8 +102,71 @@ Data is expected to be in the format that the cache would deliver from an extrac
     key: {data, ttl, created},
     ...
 }
-
-### Coming soon
-A code sandbox with examples.  In the interim, please view the tests for examples.
 ```
+## Advanced Usage
+
+### External cache
+
+This cache is design to easily work with any external cache/database to back its storage/retrieval for large/enterprise scale implementations.  Such implementations require that you write your own interface that implements the following skeleton:
+
+```
+const externalCache =
+{
+    //required
+    get: (key) => { 
+        // code to retrieve data from your external caching mechanism
+        ...
+        return <value retrieved above>;
+    },
+    put: (key, value) => {
+        // code to store key/value pair in your external caching mechanism
+        ...
+        return;
+    },
+    delete: (key) => {
+        // code to delete data by key from your external caching mechanism
+        ...
+        return <any return value from external cache (e.g. success/fail code)>;
+    },
+    flush: (key) => {
+        // code to delete all data from your external caching mechanism
+        ...
+        return <any return value from external cache (e.g. success/fail code)>;
+    },
+    //optional
+    prime: (object) => {
+        // code load data object produced from dump (below) into your external cache
+        ...
+        return <any return value from external cache (e.g. success/fail code)>;
+    },
+    dump: () => {
+        // code to extract all data from your external caching mechanism
+        ...
+        return <data retrieved above>;
+    }
+};
+```
+Once you have implemented your interface to interact with the external caching mechanism/database, simply instation your cache like this:
+
+```
+const cache = new GraphQLSimpleCache(externalCache);
+```
+#### Handling connectivity when dealing with an external cache
+If your cache has a way of telling you when it is available/unavailable, or if using an in memory database, and the driver indicates it is not connected, (e.g. in the case of Redis, it may not be installed on devloper systems, and only be available in test/production servers) add a **connected** indicator to your external cache interface implementation as follows:
+
+```
+const externalCache =
+{
+    ...
+    ...
+    connected: true,
+    ...
+    ...
+}
+```
+Simply perform `externalCache.connected = false;` when not connected and `externalCache.connected` when connected.  The framework will take care of falling back to non use of cache when not connected instead of failing and bringing down your application.
+
+### Sample Code
+Several test have been provided to give you various implementation examples.
+
 [View Release Notes](CHANGELOG.md)

@@ -291,7 +291,7 @@ describe('index.js - test caching', () =>
         const bill = await loader.load({options: {age: 6, name: "Bill"}, loader: mockDataRetriever, excludeKeys: ["age"]});
         const bob = await loader.load({options: {age: 7, name: "Bob"}, loader: mockDataRetriever, excludeKeys: ["age"]});
         
-        const dataDump = loader.dump();
+        const dataDump = await loader.dump();
         expect(mockDataRetriever.mock.calls.length).toBe(2);
         expect(Object.keys(dataDump).length).toBe(2);
         done();

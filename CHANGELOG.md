@@ -1,5 +1,9 @@
 # GraphQL Simple Cache - Release Notes / Change Log
 
+## v0.0.13
+- Add Redis implementation of external cache
+- Update documentation and provide example of Redis implementation
+  
 ## v0.0.12
 - Add alternate key for cache
   
